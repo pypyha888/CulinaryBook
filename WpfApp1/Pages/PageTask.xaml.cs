@@ -14,7 +14,6 @@ namespace WpfApp1
         public PageTask()
         {
             InitializeComponent();
-
             // ⏰ Инициализация страницы 
             InitializePage();
         }

@@ -12,61 +12,42 @@ namespace WpfApp1.Pages
     /// </summary>
     public partial class AddRecip : Page
     {
-        // 📦 Текущий рецепт (null — новый, не null — редактирование)
         private Recipes _recipe;
+
+        // 📁 Путь к папке с изображениями проекта
+        private readonly string _imagesDir = @"C:\Users\10240626\Source\Repos\CulinaryBook\WpfApp1\Images\";
 
         public AddRecip(Recipes recipe = null)
         {
             InitializeComponent();
-
             _recipe = recipe ?? new Recipes();
-
-            // 🏷️ Заполняем выпадающие списки
             FillCategories();
             FillAuthors();
 
-            // 📝 Если редактируем — подгружаем данные
             if (recipe != null)
-            {
                 LoadRecipeData(recipe);
-            }
+            else
+                LoadImageToPictureBox(Path.Combine(_imagesDir, "zaglushka.jpg")); // заглушка для нового
         }
 
-        /// <summary>
-        /// 📁 Заполнение списка категорий
-        /// </summary>
         private void FillCategories()
         {
             CategoryCombo.Items.Clear();
             CategoryCombo.Items.Add("📁 Выбор категории");
             CategoryCombo.SelectedIndex = 0;
-
-            var categories = AppConnect.model01.Categories;
-            foreach (var c in categories)
-            {
+            foreach (var c in AppConnect.model01.Categories)
                 CategoryCombo.Items.Add(c.CategoryName);
-            }
         }
 
-        /// <summary>
-        /// 🧙 Заполнение списка авторов
-        /// </summary>
         private void FillAuthors()
         {
             AuthorCombo.Items.Clear();
             AuthorCombo.Items.Add("🧙 Выбор автора");
             AuthorCombo.SelectedIndex = 0;
-
-            var authors = AppConnect.model01.Authors;
-            foreach (var a in authors)
-            {
+            foreach (var a in AppConnect.model01.Authors)
                 AuthorCombo.Items.Add(a.AuthorName);
-            }
         }
 
-        /// <summary>
-        /// 📖 Подгрузка данных рецепта при редактировании
-        /// </summary>
         private void LoadRecipeData(Recipes recipe)
         {
             NameRecepis.Text = recipe.RecipeName;
@@ -74,31 +55,29 @@ namespace WpfApp1.Pages
             TextTime.Text = recipe.CookingTime?.ToString();
             TextPage.Text = recipe.Image;
 
-            // 🏷️ Выбор категории
             if (recipe.CategoryID.HasValue && recipe.CategoryID.Value < CategoryCombo.Items.Count)
                 CategoryCombo.SelectedIndex = recipe.CategoryID.Value;
 
-            // 🧙 Выбор автора
             if (recipe.AuthorID.HasValue && recipe.AuthorID.Value < AuthorCombo.Items.Count)
                 AuthorCombo.SelectedIndex = recipe.AuthorID.Value;
 
-            // 🖼️ Загрузка изображения
+            // 🖼️ Загружаем картинку или заглушку
+            string zaglushka = Path.Combine(_imagesDir, "zaglushka.jpg");
             if (!string.IsNullOrEmpty(recipe.Image))
             {
-                string imagePath = System.IO.Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory, "..\\..\\Images\\", recipe.Image);
-                LoadImageToPictureBox(imagePath);
+                string imagePath = Path.Combine(_imagesDir, Path.GetFileName(recipe.Image));
+                LoadImageToPictureBox(File.Exists(imagePath) ? imagePath : zaglushka);
+            }
+            else
+            {
+                LoadImageToPictureBox(zaglushka);
             }
         }
 
-        /// <summary>
-        /// ✅ Обработчик кнопки "Добавить"
-        /// </summary>
         private void AddRecep_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // 🔍 Валидация полей
                 if (string.IsNullOrWhiteSpace(NameRecepis.Text) ||
                     string.IsNullOrWhiteSpace(DescRecipes.Text) ||
                     string.IsNullOrWhiteSpace(TextTime.Text) ||
@@ -110,7 +89,6 @@ namespace WpfApp1.Pages
                     return;
                 }
 
-                // ⏰ Проверка числового формата времени
                 if (!int.TryParse(TextTime.Text, out int cookingTime) || cookingTime <= 0)
                 {
                     MessageBox.Show("Введите корректное время приготовления (целое число)!", "📖 Уведомление",
@@ -118,7 +96,6 @@ namespace WpfApp1.Pages
                     return;
                 }
 
-                // 📝 Заполняем объект рецепта
                 _recipe.RecipeName = NameRecepis.Text.Trim();
                 _recipe.Description = DescRecipes.Text.Trim();
                 _recipe.CategoryID = CategoryCombo.SelectedIndex;
@@ -126,20 +103,14 @@ namespace WpfApp1.Pages
                 _recipe.CookingTime = cookingTime;
                 _recipe.Image = TextPage.Text;
 
-                // 💾 Сохраняем в базу
                 if (_recipe.RecipeID == 0)
-                {
-                    // ➕ Новый рецепт
                     AppConnect.model01.Recipes.Add(_recipe);
-                }
-                // (если RecipeID != 0 — EF уже отслеживает изменения)
 
                 AppConnect.model01.SaveChanges();
 
                 MessageBox.Show("✨ Данные успешно добавлены!", "✅ Успех",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // 🔙 Возврат к списку рецептов
                 ApplicationData.AppFrame.frmMain.Navigate(new PageTask());
             }
             catch (Exception ex)
@@ -149,17 +120,11 @@ namespace WpfApp1.Pages
             }
         }
 
-        /// <summary>
-        /// ⬅️ Обработчик кнопки "К рецептам"
-        /// </summary>
         private void HomeWorld_Click(object sender, RoutedEventArgs e)
         {
             ApplicationData.AppFrame.frmMain.Navigate(new PageTask());
         }
 
-        /// <summary>
-        /// 📂 Обработчик кнопки загрузки изображения
-        /// </summary>
         private void LoadImage_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
@@ -172,19 +137,16 @@ namespace WpfApp1.Pages
             {
                 try
                 {
-                    string photoName = System.IO.Path.GetFileName(dialog.FileName);
-                    string imagesDirectory = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory, "..\\..\\Images\\");
+                    string photoName = Path.GetFileName(dialog.FileName);
 
-                    if (!Directory.Exists(imagesDirectory))
-                        Directory.CreateDirectory(imagesDirectory);
+                    if (!Directory.Exists(_imagesDir))
+                        Directory.CreateDirectory(_imagesDir);
 
-                    string destinationPath = System.IO.Path.Combine(imagesDirectory, photoName);
+                    string destinationPath = Path.Combine(_imagesDir, photoName);
                     File.Copy(dialog.FileName, destinationPath, true);
 
                     _recipe.Image = photoName;
                     TextPage.Text = photoName;
-
                     LoadImageToPictureBox(destinationPath);
 
                     MessageBox.Show($"📸 Изображение загружено: {photoName}", "✅ Успех",
@@ -196,20 +158,11 @@ namespace WpfApp1.Pages
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            else
-            {
-                MessageBox.Show("Изображение не выбрано.", "⚠️ Предупреждение",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
         }
 
-        /// <summary>
-        /// 🖼️ Загрузка изображения в превью
-        /// </summary>
         private void LoadImageToPictureBox(string imagePath)
         {
             if (!File.Exists(imagePath)) return;
-
             try
             {
                 BitmapImage bitmap = new BitmapImage();
@@ -217,13 +170,16 @@ namespace WpfApp1.Pages
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.UriSource = new Uri(imagePath);
                 bitmap.EndInit();
-
                 pictureBox.Source = bitmap;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"💥 Ошибка при отображении изображения:\n{ex.Message}");
             }
+        }
+        private void Shagi_Click(object sender, RoutedEventArgs e)
+        {
+            ApplicationData.AppFrame.frmMain.Navigate(new PageShagi(_recipe));
         }
     }
 }

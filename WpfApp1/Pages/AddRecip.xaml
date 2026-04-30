@@ -167,7 +167,7 @@
         Margin="20,0"
         FontFamily="Segoe Script"
         FontSize="13"
-        Click="HomeWorld_Click"/>
+        Click="Shagi_Click"/>
             </StackPanel>
         </Border>
 
