@@ -355,8 +355,8 @@ namespace WpfApp1
         /// </summary> 
         private void LikeButton_Click(object sender, RoutedEventArgs e)
         {
-            // 🎭 Переход на страницу избранных рецептов 
-         //   ApplicationData.AppFrame.frmMain.Navigate(new PageLike());
+            // 🎭 Переход на страницу избранных рецептов
+            ApplicationData.AppFrame.frmMain.Navigate(new Pages.PageLike());
         }
 
         /// <summary> 
