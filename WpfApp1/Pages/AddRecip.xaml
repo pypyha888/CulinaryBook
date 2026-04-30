@@ -160,6 +160,14 @@
                         FontFamily="Segoe Script"
                         FontSize="13"
                         Click="AddRecep_Click"/>
+                <Button x:Name="Shagi"
+        Content="Шаги →"
+        Width="140"
+        Height="35"
+        Margin="20,0"
+        FontFamily="Segoe Script"
+        FontSize="13"
+        Click="HomeWorld_Click"/>
             </StackPanel>
         </Border>
 
