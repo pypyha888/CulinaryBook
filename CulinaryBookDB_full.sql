@@ -35,98 +35,98 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Authors](
-    [AuthorID] [int] NOT NULL,
+    [AuthorID]   [int]          NOT NULL,
     [AuthorName] [nvarchar](100) NOT NULL,
-    [Login] [nvarchar](100) NOT NULL,
-    [Password] [nvarchar](50) NOT NULL,
-    [BirthDay] [date] NULL,
-    [Number] [nvarchar](50) NULL,
-    [Stage] [float] NULL,
-    [Mail] [nvarchar](50) NULL,
+    [Login]      [nvarchar](100) NOT NULL,
+    [Password]   [nvarchar](50)  NOT NULL,
+    [BirthDay]   [date]          NULL,
+    [Number]     [nvarchar](50)  NULL,
+    [Stage]      [float]         NULL,
+    [Mail]       [nvarchar](50)  NULL,
 PRIMARY KEY CLUSTERED ([AuthorID] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[Categories](
-    [CategoryID] [int] NOT NULL,
+    [CategoryID]   [int]           NOT NULL,
     [CategoryName] [nvarchar](100) NOT NULL,
 PRIMARY KEY CLUSTERED ([CategoryID] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[Tags](
-    [TagID] [int] NOT NULL,
+    [TagID]   [int]          NOT NULL,
     [TagName] [nvarchar](50) NOT NULL,
 PRIMARY KEY CLUSTERED ([TagID] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[Ingredients](
-    [IngredientID] [int] NOT NULL,
+    [IngredientID]   [int]           NOT NULL,
     [IngredientName] [nvarchar](100) NOT NULL,
 PRIMARY KEY CLUSTERED ([IngredientID] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[Recipes](
-    [RecipeID] [int] NOT NULL,
-    [RecipeName] [nvarchar](200) NOT NULL,
-    [Description] [nvarchar](max) NULL,
-    [CategoryID] [int] NULL,
-    [AuthorID] [int] NULL,
-    [CookingTime] [int] NULL,
-    [Image] [nvarchar](50) NULL,
+    [RecipeID]    [int]            NOT NULL,
+    [RecipeName]  [nvarchar](200)  NOT NULL,
+    [Description] [nvarchar](max)  NULL,
+    [CategoryID]  [int]            NULL,
+    [AuthorID]    [int]            NULL,
+    [CookingTime] [int]            NULL,
+    [Image]       [nvarchar](50)   NULL,
 PRIMARY KEY CLUSTERED ([RecipeID] ASC)
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[CookingSteps](
-    [StepID] [int] NOT NULL,
-    [RecipeID] [int] NULL,
-    [StepNumber] [int] NULL,
+    [StepID]          [int]           NOT NULL,
+    [RecipeID]        [int]           NULL,
+    [StepNumber]      [int]           NULL,
     [StepDescription] [nvarchar](max) NULL,
 PRIMARY KEY CLUSTERED ([StepID] ASC)
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[RecipeImages](
-    [ImageID] [int] NOT NULL,
-    [RecipeID] [int] NULL,
+    [ImageID]   [int]           NOT NULL,
+    [RecipeID]  [int]           NULL,
     [ImagePath] [nvarchar](255) NULL,
 PRIMARY KEY CLUSTERED ([ImageID] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[RecipeIngredients](
-    [RecipeIngredientID] [int] NOT NULL,
-    [RecipeID] [int] NULL,
-    [IngredientID] [int] NULL,
-    [Quantity] [nvarchar](50) NULL,
+    [RecipeIngredientID] [int]          NOT NULL,
+    [RecipeID]           [int]          NULL,
+    [IngredientID]       [int]          NULL,
+    [Quantity]           [nvarchar](50) NULL,
 PRIMARY KEY CLUSTERED ([RecipeIngredientID] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[RecipeTags](
     [RecipeTagID] [int] NOT NULL,
-    [RecipeID] [int] NULL,
-    [TagID] [int] NULL,
+    [RecipeID]    [int] NULL,
+    [TagID]       [int] NULL,
 PRIMARY KEY CLUSTERED ([RecipeTagID] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[LikeRecipes](
-    [id] [int] NOT NULL,
-    [idAuthor] [int] NOT NULL,
+    [id]        [int] NOT NULL,
+    [idAuthor]  [int] NOT NULL,
     [idRecipes] [int] NOT NULL,
 PRIMARY KEY CLUSTERED ([id] ASC)
 ) ON [PRIMARY]
 GO
 
 CREATE TABLE [dbo].[Reviews](
-    [ReviewID] [int] NOT NULL,
-    [RecipeID] [int] NULL,
+    [ReviewID]   [int]           NOT NULL,
+    [RecipeID]   [int]           NULL,
     [ReviewText] [nvarchar](max) NULL,
-    [Rating] [int] NULL,
+    [Rating]     [int]           NULL,
 PRIMARY KEY CLUSTERED ([ReviewID] ASC)
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -134,42 +134,32 @@ GO
 -- =============================================
 -- 🔗 ВНЕШНИЕ КЛЮЧИ
 -- =============================================
-ALTER TABLE [dbo].[CookingSteps] WITH CHECK ADD CONSTRAINT [FK_CookingSteps_Recipes] FOREIGN KEY([RecipeID]) REFERENCES [dbo].[Recipes] ([RecipeID])
-GO
-ALTER TABLE [dbo].[LikeRecipes] WITH CHECK ADD CONSTRAINT [FK_LikeRecipes_Authors] FOREIGN KEY([idAuthor]) REFERENCES [dbo].[Authors] ([AuthorID])
-GO
-ALTER TABLE [dbo].[LikeRecipes] WITH CHECK ADD CONSTRAINT [FK_LikeRecipes_Recipes] FOREIGN KEY([idRecipes]) REFERENCES [dbo].[Recipes] ([RecipeID])
-GO
-ALTER TABLE [dbo].[RecipeImages] WITH CHECK ADD CONSTRAINT [FK_RecipeImages_Recipes] FOREIGN KEY([RecipeID]) REFERENCES [dbo].[Recipes] ([RecipeID])
-GO
+ALTER TABLE [dbo].[CookingSteps]      WITH CHECK ADD CONSTRAINT [FK_CookingSteps_Recipes]         FOREIGN KEY([RecipeID])     REFERENCES [dbo].[Recipes]     ([RecipeID])
+ALTER TABLE [dbo].[LikeRecipes]       WITH CHECK ADD CONSTRAINT [FK_LikeRecipes_Authors]           FOREIGN KEY([idAuthor])     REFERENCES [dbo].[Authors]     ([AuthorID])
+ALTER TABLE [dbo].[LikeRecipes]       WITH CHECK ADD CONSTRAINT [FK_LikeRecipes_Recipes]           FOREIGN KEY([idRecipes])    REFERENCES [dbo].[Recipes]     ([RecipeID])
+ALTER TABLE [dbo].[RecipeImages]      WITH CHECK ADD CONSTRAINT [FK_RecipeImages_Recipes]          FOREIGN KEY([RecipeID])     REFERENCES [dbo].[Recipes]     ([RecipeID])
 ALTER TABLE [dbo].[RecipeIngredients] WITH CHECK ADD CONSTRAINT [FK_RecipeIngredients_Ingredients] FOREIGN KEY([IngredientID]) REFERENCES [dbo].[Ingredients] ([IngredientID])
-GO
-ALTER TABLE [dbo].[RecipeIngredients] WITH CHECK ADD CONSTRAINT [FK_RecipeIngredients_Recipes] FOREIGN KEY([RecipeID]) REFERENCES [dbo].[Recipes] ([RecipeID])
-GO
-ALTER TABLE [dbo].[Recipes] WITH CHECK ADD CONSTRAINT [FK_Recipes_Authors] FOREIGN KEY([AuthorID]) REFERENCES [dbo].[Authors] ([AuthorID])
-GO
-ALTER TABLE [dbo].[Recipes] WITH CHECK ADD CONSTRAINT [FK_Recipes_Categories] FOREIGN KEY([CategoryID]) REFERENCES [dbo].[Categories] ([CategoryID])
-GO
-ALTER TABLE [dbo].[RecipeTags] WITH CHECK ADD CONSTRAINT [FK_RecipeTags_Recipes] FOREIGN KEY([RecipeID]) REFERENCES [dbo].[Recipes] ([RecipeID])
-GO
-ALTER TABLE [dbo].[RecipeTags] WITH CHECK ADD CONSTRAINT [FK_RecipeTags_Tags] FOREIGN KEY([TagID]) REFERENCES [dbo].[Tags] ([TagID])
-GO
-ALTER TABLE [dbo].[Reviews] WITH CHECK ADD CONSTRAINT [FK_Reviews_Recipes] FOREIGN KEY([RecipeID]) REFERENCES [dbo].[Recipes] ([RecipeID])
+ALTER TABLE [dbo].[RecipeIngredients] WITH CHECK ADD CONSTRAINT [FK_RecipeIngredients_Recipes]     FOREIGN KEY([RecipeID])     REFERENCES [dbo].[Recipes]     ([RecipeID])
+ALTER TABLE [dbo].[Recipes]           WITH CHECK ADD CONSTRAINT [FK_Recipes_Authors]               FOREIGN KEY([AuthorID])     REFERENCES [dbo].[Authors]     ([AuthorID])
+ALTER TABLE [dbo].[Recipes]           WITH CHECK ADD CONSTRAINT [FK_Recipes_Categories]            FOREIGN KEY([CategoryID])   REFERENCES [dbo].[Categories]  ([CategoryID])
+ALTER TABLE [dbo].[RecipeTags]        WITH CHECK ADD CONSTRAINT [FK_RecipeTags_Recipes]            FOREIGN KEY([RecipeID])     REFERENCES [dbo].[Recipes]     ([RecipeID])
+ALTER TABLE [dbo].[RecipeTags]        WITH CHECK ADD CONSTRAINT [FK_RecipeTags_Tags]               FOREIGN KEY([TagID])        REFERENCES [dbo].[Tags]        ([TagID])
+ALTER TABLE [dbo].[Reviews]           WITH CHECK ADD CONSTRAINT [FK_Reviews_Recipes]               FOREIGN KEY([RecipeID])     REFERENCES [dbo].[Recipes]     ([RecipeID])
 GO
 
 -- =============================================
 -- 🏷️ ТЕГИ
 -- =============================================
 INSERT INTO [dbo].[Tags] ([TagID], [TagName]) VALUES
-(1, N'Завтрак'),
-(2, N'Обед'),
-(3, N'Ужин'),
-(4, N'Десерт'),
-(5, N'Суп'),
-(6, N'Выпечка'),
-(7, N'Напиток'),
-(8, N'Быстрый'),
-(9, N'Праздничный'),
+(1,  N'Завтрак'),
+(2,  N'Обед'),
+(3,  N'Ужин'),
+(4,  N'Десерт'),
+(5,  N'Суп'),
+(6,  N'Выпечка'),
+(7,  N'Напиток'),
+(8,  N'Быстрый'),
+(9,  N'Праздничный'),
 (10, N'Вегетарианский')
 GO
 
@@ -306,41 +296,89 @@ GO
 -- 👣 ШАГИ ПРИГОТОВЛЕНИЯ
 -- =============================================
 INSERT INTO [dbo].[CookingSteps] ([StepID], [RecipeID], [StepNumber], [StepDescription]) VALUES
+
+-- Рецепт 1: Тыквенный пирог Хогвартса
 (1,  1, 1, N'Очистить тыкву, нарезать кубиками и запечь в духовке при 180°C до мягкости (30 мин).'),
 (2,  1, 2, N'Измельчить тыкву в пюре, добавить яйца, сахар, корицу и мускатный орех, перемешать.'),
 (3,  1, 3, N'Приготовить песочное тесто из муки, масла и щепотки соли. Раскатать и выложить в форму.'),
 (4,  1, 4, N'Залить тыквенную начинку в форму. Выпекать 45 минут при 180°C до золотистой корочки.'),
-(5,  4, 1, N'Нагреть молоко в кастрюле, не доводя до кипения.'),
-(6,  4, 2, N'Добавить сахар, сливочное масло и ваниль. Перемешивать до растворения.'),
-(7,  4, 3, N'Взбить отдельно сливки до мягких пиков и выложить сверху. Подавать тёплым.'),
-(8,  5, 1, N'Растопить шоколад на водяной бане, добавить подогретые сливки и мёд.'),
-(9,  5, 2, N'Вылить массу в силиконовые формочки в виде лягушек. Убрать в холодильник на 2 часа.'),
-(10, 5, 3, N'Извлечь из форм и упаковать в фольгу. Внутрь вложить карточку с волшебником.'),
-(11, 7, 1, N'Смешать муку, имбирь и разрыхлитель. В отдельной миске взбить масло с сахаром.'),
-(12, 7, 2, N'Соединить все ингредиенты, замесить тесто. Убрать в холодильник на 30 минут.'),
-(13, 7, 3, N'Раскатать тесто, вырезать фигурки. Выпекать 10 минут при 175°C.'),
-(14, 7, 4, N'Остывшее печенье украсить цветной глазурью из сахарной пудры и лимонного сока.')
+
+-- Рецепт 2: Кляксопуст жареный
+(5,  2, 1, N'Промыть кляксопусты (сосиски) под холодной водой, обсушить бумажным полотенцем.'),
+(6,  2, 2, N'Сделать несколько неглубоких надрезов по всей длине — чтобы не лопнули при жарке.'),
+(7,  2, 3, N'Разогреть сковороду с маслом на среднем огне, выложить кляксопусты.'),
+(8,  2, 4, N'Жарить 10–12 минут, периодически переворачивая, до румяной корочки со всех сторон.'),
+(9,  2, 5, N'Растопить в той же сковороде сливочное масло с чесноком, полить кляксопусты и посыпать зеленью. Подавать горячими.'),
+
+-- Рецепт 3: Суп из котла Хагрида
+(10, 3, 1, N'Говядину нарезать крупными кусками, залить холодной водой и довести до кипения. Снять пену, убавить огонь.'),
+(11, 3, 2, N'Добавить целую луковицу и морковь — для навара. Варить на слабом огне 1 час.'),
+(12, 3, 3, N'Вынуть мясо, нарезать на порционные куски. Лук и морковь выбросить.'),
+(13, 3, 4, N'В бульон добавить нарезанные картофель, морковь и лук. Варить 20 минут до мягкости.'),
+(14, 3, 5, N'Вернуть мясо в суп, посолить, поперчить, добавить чеснок. Дать настояться 10 минут под крышкой. Подавать с хлебом.'),
+
+-- Рецепт 4: Сливочное пиво
+(15, 4, 1, N'Нагреть молоко в кастрюле, не доводя до кипения.'),
+(16, 4, 2, N'Добавить сахар, сливочное масло и ваниль. Перемешивать до растворения.'),
+(17, 4, 3, N'Взбить отдельно сливки до мягких пиков и выложить сверху. Подавать тёплым.'),
+
+-- Рецепт 5: Шоколадные лягушки домашние
+(18, 5, 1, N'Растопить шоколад на водяной бане, добавить подогретые сливки и мёд.'),
+(19, 5, 2, N'Вылить массу в силиконовые формочки в виде лягушек. Убрать в холодильник на 2 часа.'),
+(20, 5, 3, N'Извлечь из форм и упаковать в фольгу. Внутрь вложить карточку с волшебником.'),
+
+-- Рецепт 6: Пастуший пирог Большого Зала
+(21, 6, 1, N'Картофель отварить до мягкости, слить воду. Размять в пюре с маслом и молоком, посолить.'),
+(22, 6, 2, N'Лук и морковь мелко нарезать, обжарить на масле до мягкости 5–7 минут.'),
+(23, 6, 3, N'Добавить говяжий фарш к овощам, жарить до готовности, разбивая комки. Посолить, добавить чеснок.'),
+(24, 6, 4, N'Выложить мясную начинку в форму для запекания ровным слоем.'),
+(25, 6, 5, N'Сверху выложить картофельное пюре, разровнять и сделать узор вилкой. Запекать при 200°C 25–30 минут до золотистой корочки.'),
+
+-- Рецепт 7: Имбирные печенья Уизли
+(26, 7, 1, N'Смешать муку, имбирь и разрыхлитель. В отдельной миске взбить масло с сахаром.'),
+(27, 7, 2, N'Соединить все ингредиенты, замесить тесто. Убрать в холодильник на 30 минут.'),
+(28, 7, 3, N'Раскатать тесто, вырезать фигурки. Выпекать 10 минут при 175°C.'),
+(29, 7, 4, N'Остывшее печенье украсить цветной глазурью из сахарной пудры и лимонного сока.'),
+
+-- Рецепт 8: Зелье бодрости (кофе с пряностями)
+(30, 8, 1, N'Сварить крепкий кофе любым удобным способом — в турке, френч-прессе или кофемашине.'),
+(31, 8, 2, N'В чашку положить молотую корицу и раздавленные коробочки кардамона.'),
+(32, 8, 3, N'Залить горячим кофе, перемешать и дать настояться 2 минуты.'),
+(33, 8, 4, N'Добавить мёд по вкусу, перемешать. Подавать горячим — зелье бодрости готово.'),
+
+-- Рецепт 9: Ростбиф праздничного пира
+(34, 9, 1, N'Говядину (вырезку или толстый край) достать из холодильника за час — мясо должно быть комнатной температуры.'),
+(35, 9, 2, N'Натереть со всех сторон солью, перцем, измельчённым чесноком и смесью трав (розмарин, тимьян).'),
+(36, 9, 3, N'Раскалить сковороду с маслом, обжарить мясо по 2–3 минуты с каждой стороны до корочки.'),
+(37, 9, 4, N'Переложить в форму и запекать при 180°C: 20 мин — medium rare, 30 мин — medium, 40 мин — well done.'),
+(38, 9, 5, N'Дать мясу отдохнуть 15 минут под фольгой — соки распределятся равномерно. Нарезать и подавать с соусом из красного вина.'),
+
+-- Рецепт 10: Салат «Мандрагора»
+(39, 10, 1, N'Шпинат промыть и обсушить. Грецкие орехи слегка обжарить на сухой сковороде 2–3 минуты для аромата.'),
+(40, 10, 2, N'Козий сыр нарезать кружочками или покрошить руками.'),
+(41, 10, 3, N'Приготовить заправку: смешать мёд, оливковое масло и немного лимонного сока, посолить.'),
+(42, 10, 4, N'Выложить шпинат на тарелку, сверху — орехи и сыр. Полить заправкой и сразу подавать.')
 GO
 
 -- =============================================
 -- 🏷️ ТЕГИ РЕЦЕПТОВ
 -- =============================================
 INSERT INTO [dbo].[RecipeTags] ([RecipeTagID], [RecipeID], [TagID]) VALUES
-(1,  1, 3),
-(2,  1, 9),
-(3,  2, 8),
-(4,  2, 5),
-(5,  3, 2),
-(6,  4, 7),
-(7,  4, 9),
-(8,  5, 4),
-(9,  5, 9),
-(10, 6, 2),
-(11, 7, 6),
-(12, 7, 9),
-(13, 8, 1),
-(14, 8, 7),
-(15, 9, 3),
+(1,  1,  3),
+(2,  1,  9),
+(3,  2,  8),
+(4,  2,  5),
+(5,  3,  2),
+(6,  4,  7),
+(7,  4,  9),
+(8,  5,  4),
+(9,  5,  9),
+(10, 6,  2),
+(11, 7,  6),
+(12, 7,  9),
+(13, 8,  1),
+(14, 8,  7),
+(15, 9,  3),
 (16, 10, 6),
 (17, 10, 10)
 GO
@@ -364,13 +402,13 @@ GO
 -- ⭐ ОТЗЫВЫ
 -- =============================================
 INSERT INTO [dbo].[Reviews] ([ReviewID], [RecipeID], [ReviewText], [Rating]) VALUES
-(1, 4, N'Лучшее сливочное пиво, которое я пробовал! Точь-в-точь как в «Трёх метлах»!', 5),
-(2, 1, N'Потрясающий пирог, бабушка Уизли была бы в восторге. Делаю каждое Рождество.', 5),
-(3, 5, N'Прыгают не так высоко, как настоящие, но вкус — магический!', 4),
-(4, 6, N'Сытно и вкусно. Хагрид одобряет.', 4),
-(5, 8, N'Зелье бодрости действует. Даже лучше, чем пишут в учебниках Снейпа.', 5),
-(6, 7, N'Мягкие, ароматные. Готовила с детьми — всем понравилось!', 5),
-(7, 3, N'Наваристый суп, согревает в самую холодную зиму Хогсмида.', 4),
+(1, 4,  N'Лучшее сливочное пиво, которое я пробовал! Точь-в-точь как в «Трёх метлах»!', 5),
+(2, 1,  N'Потрясающий пирог, бабушка Уизли была бы в восторге. Делаю каждое Рождество.', 5),
+(3, 5,  N'Прыгают не так высоко, как настоящие, но вкус — магический!', 4),
+(4, 6,  N'Сытно и вкусно. Хагрид одобряет.', 4),
+(5, 8,  N'Зелье бодрости действует. Даже лучше, чем пишут в учебниках Снейпа.', 5),
+(6, 7,  N'Мягкие, ароматные. Готовила с детьми — всем понравилось!', 5),
+(7, 3,  N'Наваристый суп, согревает в самую холодную зиму Хогсмида.', 4),
 (8, 10, N'Лёгкий и свежий. Хороший перерыв между уроками.', 4)
 GO
 
