@@ -179,7 +179,47 @@ namespace WpfApp1.Pages
         }
         private void Shagi_Click(object sender, RoutedEventArgs e)
         {
-            ApplicationData.AppFrame.frmMain.Navigate(new PageShagi(_recipe));
+            // Валидация — нельзя перейти к шагам без основных данных
+            if (string.IsNullOrWhiteSpace(NameRecepis.Text) ||
+                string.IsNullOrWhiteSpace(DescRecipes.Text) ||
+                string.IsNullOrWhiteSpace(TextTime.Text) ||
+                CategoryCombo.SelectedIndex == 0 ||
+                AuthorCombo.SelectedIndex == 0)
+            {
+                MessageBox.Show("Сначала заполните все поля рецепта и нажмите «Добавить».",
+                    "📖 Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!int.TryParse(TextTime.Text, out int cookingTime) || cookingTime <= 0)
+            {
+                MessageBox.Show("Введите корректное время приготовления (целое число).",
+                    "📖 Уведомление", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                // Сохраняем рецепт если ещё не сохранён
+                _recipe.RecipeName = NameRecepis.Text.Trim();
+                _recipe.Description = DescRecipes.Text.Trim();
+                _recipe.CategoryID = CategoryCombo.SelectedIndex;
+                _recipe.AuthorID = AuthorCombo.SelectedIndex;
+                _recipe.CookingTime = cookingTime;
+                _recipe.Image = TextPage.Text;
+
+                if (_recipe.RecipeID == 0)
+                    AppConnect.model01.Recipes.Add(_recipe);
+
+                AppConnect.model01.SaveChanges();
+
+                ApplicationData.AppFrame.frmMain.Navigate(new PageShagi(_recipe));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении рецепта:\n{ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
